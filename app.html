@@ -467,8 +467,8 @@
     const ttl        = val('ttl')        || '[Tempat, Tanggal Lahir]';
     const agama      = val('agama')      || '[Agama]';
     const pend       = val('pendidikan') || 'S1';
-    const jurusan    = val('jurusan')    || '[Jurusan]';
-    const inst       = val('institusi')  || '[Universitas]';
+    const jurusan    = val('jurusan');
+    const inst       = val('institusi');
     const alamat     = val('alamat')     || '[Alamat]';
     const wa         = val('wa')         || '[Nomor WA]';
     const email      = val('email')      || '[Email]';
@@ -515,7 +515,7 @@
           <tr><td>Jenis Kelamin</td><td class="colon">:</td><td>${gender}</td></tr>
           <tr><td>Tempat, Tanggal Lahir</td><td class="colon">:</td><td>${ttl}</td></tr>
           <tr><td>Agama</td><td class="colon">:</td><td>${agama}</td></tr>
-          <tr><td>Pendidikan Terakhir</td><td class="colon">:</td><td>${pend} ${jurusan} (${inst})</td></tr>
+          <tr><td>Pendidikan Terakhir</td><td class="colon">:</td><td>${[pend, jurusan].filter(Boolean).join(' ')}${inst ? ' (' + inst + ')' : ''}</td></tr>
           <tr><td>Alamat</td><td class="colon">:</td><td>${alamat}</td></tr>
           <tr><td>Nomor WA</td><td class="colon">:</td><td>${wa}</td></tr>
           <tr><td>E-mail</td><td class="colon">:</td><td>${email}</td></tr>
