@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surat Lamaran Generator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f3;
+      --surface: #ffffff;
+      --surface-2: #f9f9f8;
+      --border: #e0dfd8;
+      --border-strong: #c8c7bf;
+      --text: #1a1a18;
+      --text-sec: #5a5a56;
+      --text-muted: #9a9a94;
+      --accent: #2563eb;
+      --accent-bg: #eff6ff;
+      --accent-border: #bfdbfe;
+      --radius: 8px;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #18181a;
+        --surface: #232325;
+        --surface-2: #2c2c2e;
+        --border: #3a3a3c;
+        --border-strong: #505052;
+        --text: #f0f0ee;
+        --text-sec: #a0a09c;
+        --text-muted: #666662;
+        --accent: #60a5fa;
+        --accent-bg: #1e3a5f;
+        --accent-border: #2563eb;
+      }
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 0.5px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 16px;
+    }
+    header h1 { font-size: 15px; font-weight: 600; color: var(--text); }
+    header p { font-size: 12px; color: var(--text-muted); }
+
+    .header-actions { display: flex; gap: 8px; }
+
+    .main { display: flex; flex: 1; gap: 0; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 360px;
+      min-width: 300px;
+      background: var(--surface);
+      border-right: 0.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 57px);
+      position: sticky;
+      top: 57px;
+      overflow: hidden;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--surface-2);
+    }
+    .tab {
+      flex: 1;
+      padding: 10px 4px;
+      font-size: 12.5px;
+      font-family: var(--font);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .tab:hover { color: var(--text-sec); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--surface); }
+
+    .form-scroll { flex: 1; overflow-y: auto; padding: 0; }
+
+    .form-section { padding: 16px 20px; }
+    .form-section + .form-section { border-top: 0.5px solid var(--border); }
+
+    .section-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 12px;
+    }
+
+    .field { margin-bottom: 10px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-sec);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      font-size: 13px;
+      padding: 7px 10px;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text);
+      font-family: var(--font);
+      transition: border-color 0.15s;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .sidebar-footer {
+      padding: 12px 20px;
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      gap: 8px;
+      background: var(--surface);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-family: var(--font);
+      font-weight: 500;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      flex: 1;
+      justify-content: center;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-ghost {
+      background: none;
+      border: 0.5px solid var(--border-strong);
+      color: var(--text-sec);
+    }
+    .btn-ghost:hover { background: var(--surface-2); }
+
+    /* Preview */
+    .preview {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .preview-toolbar {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .preview-toolbar span { font-size: 12px; color: var(--text-muted); }
+    .preview-toolbar-actions { display: flex; gap: 6px; }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-family: var(--font);
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--text-sec);
+      transition: all 0.15s;
+    }
+    .icon-btn:hover { border-color: var(--border-strong); background: var(--surface-2); }
+
+    /* Paper */
+    #letter-paper {
+      background: white;
+      color: #1a1a1a;
+      width: 100%;
+      max-width: 680px;
+      min-height: 900px;
+      padding: 56px 64px;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.65;
+      border: 0.5px solid #d4d4cc;
+      border-radius: 2px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    }
+
+    .letter-date { text-align: right; margin-bottom: 28px; }
+    .letter-hal { margin-bottom: 20px; font-weight: bold; }
+    .letter-recipient { margin-bottom: 28px; }
+    .letter-recipient p { margin: 0; line-height: 1.7; }
+    .letter-greeting { margin-bottom: 14px; }
+    .letter-body p { margin-bottom: 14px; text-align: justify; }
+    .letter-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11.5pt; }
+    .letter-table td { padding: 2px 0; vertical-align: top; }
+    .letter-table td:first-child { width: 140px; }
+    .letter-table td.colon { width: 16px; text-align: center; }
+    .letter-closing { margin-top: 28px; }
+    .sign-space { height: 70px; }
+    .signer { font-weight: bold; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: var(--surface);
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 999;
+      animation: slideUp 0.2s ease;
+    }
+    .toast.show { display: flex; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; }
+      .preview { padding: 16px 12px; }
+      #letter-paper { padding: 32px 28px; font-size: 11pt; }
+      header h1 { font-size: 14px; }
+      .header-actions .btn span { display: none; }
+    }
+
+    @media print {
+      header, .sidebar, .preview-toolbar, .toast { display: none !important; }
+      .main { display: block; }
+      .preview { padding: 0; }
+      #letter-paper {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+        min-height: auto;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark"><i class="ti ti-file-text"></i></div>
+    <div>
+      <h1>Surat Lamaran Generator</h1>
+      <p>Buat surat lamaran profesional dalam hitungan menit</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="printLetter()"><i class="ti ti-printer"></i> <span>Cetak / PDF</span></button>
+  </div>
+</header>
+
+<div class="main">
+  <!-- Sidebar Form -->
+  <div class="sidebar">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('pengirim', this)">Pengirim</button>
+      <button class="tab" onclick="switchTab('tujuan', this)">Tujuan</button>
+      <button class="tab" onclick="switchTab('isi', this)">Isi Surat</button>
+    </div>
+
+    <div class="form-scroll">
+      <!-- Tab Pengirim -->
+      <div id="tab-pengirim" class="tab-panel active">
+        <div class="form-section">
+          <p class="section-label">Identitas diri</p>
+          <div class="field"><label>Nama Lengkap</label><input id="nama" type="text" placeholder="Nama lengkap kamu" oninput="render()"></div>
+          <div class="field"><label>Jenis Kelamin</label>
+            <select id="gender" onchange="render()">
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+          </div>
+          <div class="field"><label>Tempat, Tanggal Lahir</label><input id="ttl" type="text" placeholder="Bandung, 1 Januari 2000" oninput="render()"></div>
+          <div class="field"><label>Agama</label><input id="agama" type="text" placeholder="Islam" oninput="render()"></div>
+        </div>
+
+        <div class="form-section">
+          <p class="section-label">Pendidikan</p>
+          <div class="field"><label>Pendidikan Terakhir</label>
+            <select id="pendidikan" onchange="render()">
+              <option value="S1">S1</option>
+              <option value="S2">S2</option>
+              <option value="D3">D3</option>
+              <option value="D4">D4</option>
+              <option value="SMA/SMK">SMA/SMK</option>
+            </select>
+          </div>
+          <div class="field"><label>Jurusan / Program Studi</label><input id="jurusan" type="text" placeholder="Teknik Informatika" oninput="render()"></div>
+          <div class="field"><label>Universitas / Institusi</label><input id="institusi" type="text" placeholder="Universitas ..." oninput="render()"></div>
+        </div>
+
+        <div class="form-section">
+          <p class="section-label">Kontak</p>
+          <div class="field"><label>Alamat</label><input id="alamat" type="text" placeholder="Jl. Contoh No. 1, Kota" oninput="render()"></div>
+          <div class="field-row">
+            <div class="field"><label>Nomor WhatsApp</label><input id="wa" type="text" placeholder="08xx" oninput="render()"></div>
+            <div class="field"><label>Email</label><input id="email" type="text" placeholder="nama@gmail.com" oninput="render()"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Kota Pengirim</label><input id="kota" type="text" placeholder="Bandung" oninput="render()"></div>
+            <div class="field"><label>Tanggal Surat</label><input id="tgl" type="date" oninput="render()"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Tujuan -->
+      <div id="tab-tujuan" class="tab-panel">
+        <div class="form-section">
+          <p class="section-label">Informasi perusahaan</p>
+          <div class="field"><label>Nama Perusahaan</label><input id="perusahaan" type="text" placeholder="PT Contoh Indonesia" oninput="render()"></div>
+          <div class="field"><label>Sapaan HRD</label>
+            <select id="sapaan" onchange="render()">
+              <option value="Bapak HRD">Bapak HRD</option>
+              <option value="Ibu HRD">Ibu HRD</option>
+              <option value="Bapak/Ibu HRD">Bapak/Ibu HRD</option>
+              <option value="Tim Rekrutmen">Tim Rekrutmen</option>
+              <option value="Manajer HRD">Manajer HRD</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-section">
+          <p class="section-label">Posisi & sumber</p>
+          <div class="field"><label>Posisi yang Dilamar</label><input id="posisi" type="text" placeholder="Staff Admin, Frontend Developer, dll." oninput="render()"></div>
+          <div class="field"><label>Sumber Informasi Lowongan</label><input id="sumber" type="text" placeholder="LinkedIn, Jobstreet, website perusahaan..." oninput="render()"></div>
+        </div>
+      </div>
+
+      <!-- Tab Isi -->
+      <div id="tab-isi" class="tab-panel">
+        <div class="form-section">
+          <p class="section-label">Kustomisasi paragraf</p>
+          <div class="field">
+            <label>Paragraf setelah tabel data diri</label>
+            <textarea id="para1" oninput="render()">Bermaksud untuk mengajukan diri guna mengisi posisi tersebut. Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan berkas-berkas pendukung sebagai kelengkapan administrasi.</textarea>
+          </div>
+          <div class="field">
+            <label>Paragraf harapan & penutup</label>
+            <textarea id="para2" oninput="render()">Saya berharap Bapak/Ibu dapat mempertimbangkan surat lamaran kerja ini dan memberikan kesempatan wawancara agar saya dapat menjelaskan kualifikasi saya lebih lanjut. Saya memiliki komitmen yang tinggi untuk berkontribusi secara optimal.</textarea>
+          </div>
+          <div class="field">
+            <label>Kalimat penutup akhir</label>
+            <input id="closing" type="text" value="Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih." oninput="render()">
+          </div>
+        </div>
+        <div class="form-section">
+          <p class="section-label">Lampiran (opsional)</p>
+          <div class="field">
+            <label>Daftar lampiran</label>
+            <textarea id="lampiran" rows="4" placeholder="1. Curriculum Vitae&#10;2. Fotokopi Ijazah&#10;3. Transkrip Nilai&#10;4. Pas Foto 4x6" oninput="render()"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-ghost" onclick="resetForm()"><i class="ti ti-refresh"></i> Reset</button>
+      <button class="btn btn-primary" onclick="printLetter()"><i class="ti ti-printer"></i> Cetak / Simpan PDF</button>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview">
+    <div class="preview-toolbar">
+      <span>Preview surat lamaran</span>
+      <div class="preview-toolbar-actions">
+        <button class="icon-btn" onclick="copyText()"><i class="ti ti-copy"></i> Salin teks</button>
+        <button class="icon-btn" onclick="printLetter()"><i class="ti ti-printer"></i> Cetak / PDF</button>
+      </div>
+    </div>
+    <div id="letter-paper"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg">Berhasil!</span></div>
+
+<script>
+  function val(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function formatDate(d) {
+    if (!d) { const n = new Date(); d = n.toISOString().split('T')[0]; }
+    const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const parts = d.split('-');
+    if (parts.length !== 3) return d;
+    return `${parseInt(parts[2])} ${months[parseInt(parts[1])-1]} ${parts[0]}`;
+  }
+
+  function render() {
+    const nama       = val('nama')       || '[Nama Lengkap]';
+    const gender     = val('gender')     || 'Laki-laki';
+    const ttl        = val('ttl')        || '[Tempat, Tanggal Lahir]';
+    const agama      = val('agama')      || '[Agama]';
+    const pend       = val('pendidikan') || 'S1';
+    const jurusan    = val('jurusan')    || '[Jurusan]';
+    const inst       = val('institusi')  || '[Universitas]';
+    const alamat     = val('alamat')     || '[Alamat]';
+    const wa         = val('wa')         || '[Nomor WA]';
+    const email      = val('email')      || '[Email]';
+    const kota       = val('kota')       || '[Kota]';
+    const tgl        = val('tgl');
+    const perusahaan = val('perusahaan') || '[Nama Perusahaan]';
+    const sapaan     = val('sapaan')     || 'Bapak/Ibu HRD';
+    const posisi     = val('posisi')     || '[Posisi]';
+    const sumber     = val('sumber')     || 'informasi yang saya peroleh';
+    const para1      = val('para1');
+    const para2      = val('para2');
+    const closing    = val('closing');
+    const lampiran   = val('lampiran');
+
+    let lampiranHtml = '';
+    if (lampiran) {
+      const items = lampiran.split('\n').filter(l => l.trim());
+      lampiranHtml = `
+        <p style="margin-bottom:6px;">Adapun berkas yang saya lampirkan:</p>
+        <ol style="margin-left:20px; margin-bottom:14px; line-height:1.8;">
+          ${items.map(i => `<li>${i.replace(/^\d+\.\s*/, '')}</li>`).join('')}
+        </ol>
+      `;
+    }
+
+    document.getElementById('letter-paper').innerHTML = `
+      <div class="letter-date">${kota}, ${formatDate(tgl)}</div>
+
+      <div class="letter-hal">Hal: Lamaran Pekerjaan</div>
+
+      <div class="letter-recipient">
+        <p>Yth. ${sapaan}</p>
+        <p>${perusahaan}</p>
+        <p>di Tempat</p>
+      </div>
+
+      <div class="letter-greeting"><p>Dengan hormat,</p></div>
+
+      <div class="letter-body">
+        <p>Berdasarkan informasi lowongan pekerjaan yang saya peroleh melalui ${sumber}, saya mengetahui bahwa ${perusahaan} sedang mencari kandidat untuk posisi <strong>${posisi}</strong>. Sehubungan dengan hal tersebut, saya yang bertanda tangan di bawah ini:</p>
+
+        <table class="letter-table">
+          <tr><td>Nama</td><td class="colon">:</td><td>${nama}</td></tr>
+          <tr><td>Jenis Kelamin</td><td class="colon">:</td><td>${gender}</td></tr>
+          <tr><td>Tempat, Tanggal Lahir</td><td class="colon">:</td><td>${ttl}</td></tr>
+          <tr><td>Agama</td><td class="colon">:</td><td>${agama}</td></tr>
+          <tr><td>Pendidikan Terakhir</td><td class="colon">:</td><td>${pend} ${jurusan} (${inst})</td></tr>
+          <tr><td>Alamat</td><td class="colon">:</td><td>${alamat}</td></tr>
+          <tr><td>Nomor WA</td><td class="colon">:</td><td>${wa}</td></tr>
+          <tr><td>E-mail</td><td class="colon">:</td><td>${email}</td></tr>
+        </table>
+
+        <p>${para1}</p>
+        ${lampiranHtml}
+        <p>${para2} di ${perusahaan}.</p>
+        <p>${closing}</p>
+      </div>
+
+      <div class="letter-closing">
+        <p>Hormat saya,</p>
+        <div class="sign-space"></div>
+        <p class="signer">${nama}</p>
+      </div>
+    `;
+  }
+
+  function switchTab(name, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function printLetter() {
+    const paper = document.getElementById('letter-paper').innerHTML;
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Surat Lamaran</title>
+  <style>
+    body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.65; color: #1a1a1a; margin: 0; padding: 56px 64px; }
+    .letter-date { text-align: right; margin-bottom: 28px; }
+    .letter-hal { margin-bottom: 20px; font-weight: bold; }
+    .letter-recipient { margin-bottom: 28px; }
+    .letter-recipient p { margin: 0; line-height: 1.7; }
+    .letter-greeting { margin-bottom: 14px; }
+    .letter-body p { margin-bottom: 14px; text-align: justify; }
+    .letter-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11.5pt; }
+    .letter-table td { padding: 2px 0; vertical-align: top; }
+    .letter-table td:first-child { width: 140px; }
+    .letter-table td.colon { width: 16px; text-align: center; }
+    .letter-closing { margin-top: 28px; }
+    .sign-space { height: 70px; }
+    .signer { font-weight: bold; }
+    ol { margin-left: 20px; margin-bottom: 14px; line-height: 1.8; }
+    @media print { body { padding: 0; } }
+  </style>
+</head>
+<body>${paper}</body>
+</html>`);
+    w.document.close();
+    setTimeout(() => { w.focus(); w.print(); }, 500);
+  }
+
+  function copyText() {
+    const text = document.getElementById('letter-paper').innerText;
+    navigator.clipboard.writeText(text).then(() => showToast('Teks surat berhasil disalin!'));
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function resetForm() {
+    if (!confirm('Reset semua isian form?')) return;
+    const fields = ['nama','ttl','agama','jurusan','institusi','alamat','wa','email','kota','perusahaan','posisi','sumber','para1','para2','closing','lampiran'];
+    fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    render();
+    showToast('Form berhasil direset');
+  }
+
+  // Init default date
+  document.getElementById('tgl').valueAsDate = new Date();
+
+  // Default textarea values
+  document.getElementById('para1').value = 'Bermaksud untuk mengajukan diri guna mengisi posisi tersebut. Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan berkas-berkas pendukung sebagai kelengkapan administrasi.';
+  document.getElementById('para2').value = 'Saya berharap Bapak/Ibu dapat mempertimbangkan surat lamaran kerja ini dan memberikan kesempatan wawancara agar saya dapat menjelaskan kualifikasi saya lebih lanjut. Saya memiliki komitmen yang tinggi untuk berkontribusi secara optimal.';
+  document.getElementById('closing').value = 'Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.';
+
+  render();
+</script>
+</body>
+</html>
