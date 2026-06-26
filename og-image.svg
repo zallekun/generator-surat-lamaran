@@ -1,0 +1,62 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0d0d0d"/>
+
+  <circle cx="100" cy="100" r="280" fill="#1a2a4a" opacity="0.15"/>
+  <circle cx="100" cy="100" r="160" fill="#1a2a4a" opacity="0.1"/>
+  <circle cx="1150" cy="580" r="200" fill="#1a2a4a" opacity="0.1"/>
+
+  <rect x="620" y="-40" width="660" height="710" rx="0" fill="#111111"/>
+  <rect x="650" y="40" width="500" height="580" rx="16" fill="#161616" stroke="#252525" stroke-width="1"/>
+
+  <rect x="680" y="72" width="440" height="12" rx="3" fill="#1e1e1e"/>
+  <rect x="680" y="92" width="300" height="10" rx="3" fill="#1a1a1a"/>
+  <rect x="680" y="110" width="360" height="10" rx="3" fill="#1a1a1a"/>
+
+  <rect x="680" y="136" width="440" height="1" fill="#252525"/>
+
+  <rect x="680" y="152" width="120" height="8" rx="2" fill="#1e3a6e"/>
+  <rect x="804" y="152" width="8" height="8" rx="1" fill="#2563eb"/>
+  <rect x="680" y="166" width="340" height="8" rx="2" fill="#1a1a1a"/>
+
+  <rect x="680" y="186" width="120" height="8" rx="2" fill="#1e3a6e"/>
+  <rect x="804" y="186" width="8" height="8" rx="1" fill="#2563eb"/>
+  <rect x="680" y="200" width="280" height="8" rx="2" fill="#1a1a1a"/>
+
+  <rect x="680" y="220" width="120" height="8" rx="2" fill="#1e3a6e"/>
+  <rect x="804" y="220" width="8" height="8" rx="1" fill="#2563eb"/>
+  <rect x="680" y="234" width="320" height="8" rx="2" fill="#1a1a1a"/>
+
+  <rect x="680" y="254" width="120" height="8" rx="2" fill="#1e3a6e"/>
+  <rect x="804" y="254" width="8" height="8" rx="1" fill="#2563eb"/>
+  <rect x="680" y="268" width="260" height="8" rx="2" fill="#1a1a1a"/>
+
+  <rect x="680" y="288" width="120" height="8" rx="2" fill="#1e3a6e"/>
+  <rect x="804" y="288" width="8" height="8" rx="1" fill="#2563eb"/>
+  <rect x="680" y="302" width="380" height="8" rx="2" fill="#1a1a1a"/>
+
+  <rect x="680" y="340" width="440" height="52" rx="10" fill="#2563eb"/>
+  <text x="900" y="372" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="20" fill="white" font-weight="600">Cetak / Simpan PDF</text>
+
+  <rect x="680" y="404" width="210" height="40" rx="8" fill="#1a1a1a" stroke="#252525" stroke-width="1"/>
+  <rect x="900" y="404" width="220" height="40" rx="8" fill="#1a1a1a" stroke="#252525" stroke-width="1"/>
+
+  <rect x="80" y="200" width="48" height="48" rx="12" fill="#2563eb"/>
+  <text x="104" y="231" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" fill="white" font-weight="700">S</text>
+
+  <text x="140" y="232" font-family="system-ui,-apple-system,sans-serif" font-size="20" fill="#f0f0ee" font-weight="600">Surat Lamaran Generator</text>
+
+  <text x="80" y="320" font-family="system-ui,-apple-system,sans-serif" font-size="58" fill="#f0f0ee" font-weight="700" letter-spacing="-2">Buat surat lamaran</text>
+  <text x="80" y="390" font-family="system-ui,-apple-system,sans-serif" font-size="58" fill="#2563eb" font-weight="700" letter-spacing="-2">dalam hitungan menit</text>
+
+  <text x="80" y="440" font-family="system-ui,-apple-system,sans-serif" font-size="22" fill="#a0a09a">Isi form, surat langsung terbentuk secara real-time.</text>
+  <text x="80" y="468" font-family="system-ui,-apple-system,sans-serif" font-size="22" fill="#a0a09a">Gratis, tanpa install, tanpa daftar.</text>
+
+  <rect x="80" y="510" width="180" height="50" rx="10" fill="#2563eb"/>
+  <text x="170" y="541" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="white" font-weight="600">Buat sekarang</text>
+
+  <rect x="276" y="510" width="160" height="50" rx="10" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="356" y="541" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#606060">Open source</text>
+
+  <rect x="0" y="610" width="1200" height="20" fill="#0a0a0a"/>
+  <text x="80" y="623" font-family="system-ui,sans-serif" font-size="14" fill="#333">zallekun.github.io/generator-surat-lamaran</text>
+</svg>
