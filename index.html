@@ -3,607 +3,692 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Surat Lamaran Generator</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <title>Surat Lamaran Generator — Buat surat lamaran kerja dalam menit</title>
+  <meta name="description" content="Generator surat lamaran kerja berbasis web. Isi form, surat langsung terbentuk real-time. Gratis, tanpa install, tanpa daftar.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f5f5f3;
-      --surface: #ffffff;
-      --surface-2: #f9f9f8;
-      --border: #e0dfd8;
-      --border-strong: #c8c7bf;
-      --text: #1a1a18;
-      --text-sec: #5a5a56;
-      --text-muted: #9a9a94;
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface-2: #1e1e1e;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #f0f0ee;
+      --text-sec: #a0a09a;
+      --text-muted: #606060;
       --accent: #2563eb;
-      --accent-bg: #eff6ff;
-      --accent-border: #bfdbfe;
-      --radius: 8px;
-      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --accent-hover: #1d4ed8;
+      --accent-light: rgba(37,99,235,0.12);
+      --accent-border: rgba(37,99,235,0.3);
+      --green: #22c55e;
+      --font: 'Inter', system-ui, sans-serif;
+      --radius: 10px;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #18181a;
-        --surface: #232325;
-        --surface-2: #2c2c2e;
-        --border: #3a3a3c;
-        --border-strong: #505052;
-        --text: #f0f0ee;
-        --text-sec: #a0a09c;
-        --text-muted: #666662;
-        --accent: #60a5fa;
-        --accent-bg: #1e3a5f;
-        --accent-border: #2563eb;
-      }
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--font);
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    header {
-      background: var(--surface);
-      border-bottom: 0.5px solid var(--border);
-      padding: 14px 24px;
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
 
-    .header-left { display: flex; align-items: center; gap: 10px; }
-    .logo-mark {
-      width: 32px; height: 32px;
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .logo-icon {
+      width: 30px; height: 30px;
       background: var(--accent);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 16px;
+      font-size: 15px;
     }
-    header h1 { font-size: 15px; font-weight: 600; color: var(--text); }
-    header p { font-size: 12px; color: var(--text-muted); }
 
-    .header-actions { display: flex; gap: 8px; }
-
-    .main { display: flex; flex: 1; gap: 0; }
-
-    /* Sidebar */
-    .sidebar {
-      width: 360px;
-      min-width: 300px;
-      background: var(--surface);
-      border-right: 0.5px solid var(--border);
+    .nav-links {
       display: flex;
-      flex-direction: column;
-      height: calc(100vh - 57px);
-      position: sticky;
-      top: 57px;
-      overflow: hidden;
-    }
-
-    .tabs {
-      display: flex;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--surface-2);
-    }
-    .tab {
-      flex: 1;
-      padding: 10px 4px;
-      font-size: 12.5px;
-      font-family: var(--font);
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      color: var(--text-muted);
-      font-weight: 500;
-      transition: all 0.15s;
-    }
-    .tab:hover { color: var(--text-sec); }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--surface); }
-
-    .form-scroll { flex: 1; overflow-y: auto; padding: 0; }
-
-    .form-section { padding: 16px 20px; }
-    .form-section + .form-section { border-top: 0.5px solid var(--border); }
-
-    .section-label {
-      font-size: 10.5px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      margin-bottom: 12px;
-    }
-
-    .field { margin-bottom: 10px; }
-    .field label {
-      display: block;
-      font-size: 12px;
-      color: var(--text-sec);
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-    .field input,
-    .field textarea,
-    .field select {
-      width: 100%;
-      font-size: 13px;
-      padding: 7px 10px;
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--surface-2);
-      color: var(--text);
-      font-family: var(--font);
-      transition: border-color 0.15s;
-    }
-    .field input:focus,
-    .field textarea:focus,
-    .field select:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-    .field textarea {
-      resize: vertical;
-      min-height: 80px;
-      line-height: 1.5;
-    }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-    .sidebar-footer {
-      padding: 12px 20px;
-      border-top: 0.5px solid var(--border);
-      display: flex;
+      align-items: center;
       gap: 8px;
-      background: var(--surface);
     }
 
-    .btn {
+    .nav-link {
+      padding: 6px 14px;
+      font-size: 14px;
+      color: var(--text-sec);
+      border-radius: var(--radius);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface-2); }
+
+    .nav-cta {
+      padding: 7px 16px;
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: background 0.15s;
+    }
+    .nav-cta:hover { background: var(--accent-hover); }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 80px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 14px;
+      padding: 5px 14px;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      border-radius: 99px;
       font-size: 13px;
-      font-family: var(--font);
-      font-weight: 500;
+      color: #93b4fd;
+      margin-bottom: 28px;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 58px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-sec);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
       border-radius: var(--radius);
-      cursor: pointer;
       transition: all 0.15s;
+      cursor: pointer;
+      font-family: var(--font);
       border: none;
     }
+
     .btn-primary {
       background: var(--accent);
       color: white;
-      flex: 1;
-      justify-content: center;
     }
-    .btn-primary:hover { opacity: 0.88; }
-    .btn-ghost {
-      background: none;
-      border: 0.5px solid var(--border-strong);
-      color: var(--text-sec);
-    }
-    .btn-ghost:hover { background: var(--surface-2); }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
 
-    /* Preview */
-    .preview {
-      flex: 1;
-      overflow-y: auto;
-      padding: 32px 24px;
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-secondary:hover { background: #252525; }
+
+    .hero-note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 16px;
     }
 
-    .preview-toolbar {
+    .hero-note span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .check { color: var(--green); font-size: 14px; }
+
+    /* PREVIEW MOCKUP */
+    .mockup-wrap {
+      max-width: 900px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .mockup {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .mockup-bar {
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mockup-dots { display: flex; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+
+    .mockup-url {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .mockup-body {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 340px;
+    }
+
+    .mockup-sidebar {
+      border-right: 1px solid var(--border);
+      padding: 16px;
+    }
+
+    .mockup-tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 14px;
+    }
+
+    .m-tab {
+      flex: 1;
+      padding: 5px;
+      text-align: center;
+      font-size: 11px;
+      border-radius: 6px;
+      color: var(--text-muted);
+    }
+    .m-tab.active { background: var(--accent); color: white; }
+
+    .m-field { margin-bottom: 10px; }
+    .m-label { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; }
+    .m-input {
       width: 100%;
-      max-width: 680px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      height: 26px;
+      padding: 0 8px;
+      font-size: 11px;
+      color: var(--text-sec);
+    }
+
+    .mockup-preview {
+      padding: 20px;
+      background: #f8f8f6;
+    }
+
+    .paper-mini {
+      background: white;
+      border: 1px solid #e0e0dc;
+      border-radius: 4px;
+      padding: 16px 18px;
+      font-family: 'Times New Roman', serif;
+      color: #1a1a1a;
+    }
+
+    .p-date { text-align: right; font-size: 9px; margin-bottom: 10px; color: #444; }
+    .p-hal { font-size: 9px; font-weight: bold; margin-bottom: 8px; }
+    .p-to { font-size: 9px; margin-bottom: 10px; line-height: 1.5; color: #333; }
+    .p-body { font-size: 8.5px; color: #333; line-height: 1.6; margin-bottom: 8px; }
+    .p-table { width: 100%; font-size: 8px; border-collapse: collapse; margin-bottom: 8px; }
+    .p-table td { padding: 1px 0; color: #333; vertical-align: top; }
+    .p-table td:first-child { width: 90px; }
+    .p-table td:nth-child(2) { width: 10px; text-align: center; }
+    .p-sign { margin-top: 16px; font-size: 8.5px; color: #333; }
+    .p-sign-space { height: 24px; }
+    .p-sign-name { font-weight: bold; font-size: 8.5px; }
+
+    /* FEATURES */
+    .section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #60a5fa;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      text-align: center;
+      font-size: 16px;
+      color: var(--text-sec);
+      max-width: 480px;
+      margin: 0 auto 52px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: var(--border-strong); }
+
+    .feature-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .feature-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-sec);
+      line-height: 1.6;
+    }
+
+    /* HOW IT WORKS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0;
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+      padding: 32px 24px;
+      position: relative;
+    }
+
+    .step-num {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #93b4fd;
+      margin: 0 auto 16px;
+    }
+
+    .step h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--text-sec);
+    }
+
+    .step-arrow {
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 18px;
+      z-index: 1;
+    }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* CTA BOTTOM */
+    .cta-section {
+      text-align: center;
+      padding: 100px 24px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-size: 16px;
+      color: var(--text-sec);
+      margin-bottom: 32px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-    .preview-toolbar span { font-size: 12px; color: var(--text-muted); }
-    .preview-toolbar-actions { display: flex; gap: 6px; }
-
-    .icon-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-family: var(--font);
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      cursor: pointer;
-      color: var(--text-sec);
-      transition: all 0.15s;
-    }
-    .icon-btn:hover { border-color: var(--border-strong); background: var(--surface-2); }
-
-    /* Paper */
-    #letter-paper {
-      background: white;
-      color: #1a1a1a;
-      width: 100%;
-      max-width: 680px;
-      min-height: 900px;
-      padding: 56px 64px;
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 12pt;
-      line-height: 1.65;
-      border: 0.5px solid #d4d4cc;
-      border-radius: 2px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      max-width: 960px;
+      margin: 0 auto;
     }
 
-    .letter-date { text-align: right; margin-bottom: 28px; }
-    .letter-hal { margin-bottom: 20px; font-weight: bold; }
-    .letter-recipient { margin-bottom: 28px; }
-    .letter-recipient p { margin: 0; line-height: 1.7; }
-    .letter-greeting { margin-bottom: 14px; }
-    .letter-body p { margin-bottom: 14px; text-align: justify; }
-    .letter-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11.5pt; }
-    .letter-table td { padding: 2px 0; vertical-align: top; }
-    .letter-table td:first-child { width: 140px; }
-    .letter-table td.colon { width: 16px; text-align: center; }
-    .letter-closing { margin-top: 28px; }
-    .sign-space { height: 70px; }
-    .signer { font-weight: bold; }
+    footer p { font-size: 13px; color: var(--text-muted); }
 
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--text);
-      color: var(--surface);
-      padding: 10px 16px;
-      border-radius: var(--radius);
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-links a {
       font-size: 13px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      z-index: 999;
-      animation: slideUp 0.2s ease;
+      color: var(--text-muted);
+      transition: color 0.15s;
     }
-    .toast.show { display: flex; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .footer-links a:hover { color: var(--text-sec); }
 
-    /* Tab panels */
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .main { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; position: static; }
-      .preview { padding: 16px 12px; }
-      #letter-paper { padding: 32px 28px; font-size: 11pt; }
-      header h1 { font-size: 14px; }
-      .header-actions .btn span { display: none; }
-    }
-
-    @media print {
-      header, .sidebar, .preview-toolbar, .toast { display: none !important; }
-      .main { display: block; }
-      .preview { padding: 0; }
-      #letter-paper {
-        box-shadow: none;
-        border: none;
-        max-width: 100%;
-        min-height: auto;
-        padding: 0;
-      }
+    @media (max-width: 640px) {
+      .mockup-body { grid-template-columns: 1fr; }
+      .mockup-sidebar { display: none; }
+      .step-arrow { display: none; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+      .nav-links .nav-link { display: none; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-left">
-    <div class="logo-mark"><i class="ti ti-file-text"></i></div>
-    <div>
-      <h1>Surat Lamaran Generator</h1>
-      <p>Buat surat lamaran profesional dalam hitungan menit</p>
-    </div>
+<nav>
+  <div class="nav-logo">
+    <div class="logo-icon">📄</div>
+    Surat Lamaran Generator
   </div>
-  <div class="header-actions">
-    <button class="btn btn-ghost" onclick="printLetter()"><i class="ti ti-printer"></i> <span>Cetak / PDF</span></button>
+  <div class="nav-links">
+    <a href="#fitur" class="nav-link">Fitur</a>
+    <a href="#cara-pakai" class="nav-link">Cara pakai</a>
+    <a href="https://github.com" class="nav-link" target="_blank">GitHub ↗</a>
+    <a href="app.html" class="nav-cta">Buka generator →</a>
   </div>
-</header>
+</nav>
 
-<div class="main">
-  <!-- Sidebar Form -->
-  <div class="sidebar">
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('pengirim', this)">Pengirim</button>
-      <button class="tab" onclick="switchTab('tujuan', this)">Tujuan</button>
-      <button class="tab" onclick="switchTab('isi', this)">Isi Surat</button>
-    </div>
-
-    <div class="form-scroll">
-      <!-- Tab Pengirim -->
-      <div id="tab-pengirim" class="tab-panel active">
-        <div class="form-section">
-          <p class="section-label">Identitas diri</p>
-          <div class="field"><label>Nama Lengkap</label><input id="nama" type="text" placeholder="Nama lengkap kamu" oninput="render()"></div>
-          <div class="field"><label>Jenis Kelamin</label>
-            <select id="gender" onchange="render()">
-              <option value="Laki-laki">Laki-laki</option>
-              <option value="Perempuan">Perempuan</option>
-            </select>
-          </div>
-          <div class="field"><label>Tempat, Tanggal Lahir</label><input id="ttl" type="text" placeholder="Bandung, 1 Januari 2000" oninput="render()"></div>
-          <div class="field"><label>Agama</label><input id="agama" type="text" placeholder="Islam" oninput="render()"></div>
-        </div>
-
-        <div class="form-section">
-          <p class="section-label">Pendidikan</p>
-          <div class="field"><label>Pendidikan Terakhir</label>
-            <select id="pendidikan" onchange="render()">
-              <option value="S1">S1</option>
-              <option value="S2">S2</option>
-              <option value="D3">D3</option>
-              <option value="D4">D4</option>
-              <option value="SMA/SMK">SMA/SMK</option>
-            </select>
-          </div>
-          <div class="field"><label>Jurusan / Program Studi</label><input id="jurusan" type="text" placeholder="Teknik Informatika" oninput="render()"></div>
-          <div class="field"><label>Universitas / Institusi</label><input id="institusi" type="text" placeholder="Universitas ..." oninput="render()"></div>
-        </div>
-
-        <div class="form-section">
-          <p class="section-label">Kontak</p>
-          <div class="field"><label>Alamat</label><input id="alamat" type="text" placeholder="Jl. Contoh No. 1, Kota" oninput="render()"></div>
-          <div class="field-row">
-            <div class="field"><label>Nomor WhatsApp</label><input id="wa" type="text" placeholder="08xx" oninput="render()"></div>
-            <div class="field"><label>Email</label><input id="email" type="text" placeholder="nama@gmail.com" oninput="render()"></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label>Kota Pengirim</label><input id="kota" type="text" placeholder="Bandung" oninput="render()"></div>
-            <div class="field"><label>Tanggal Surat</label><input id="tgl" type="date" oninput="render()"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab Tujuan -->
-      <div id="tab-tujuan" class="tab-panel">
-        <div class="form-section">
-          <p class="section-label">Informasi perusahaan</p>
-          <div class="field"><label>Nama Perusahaan</label><input id="perusahaan" type="text" placeholder="PT Contoh Indonesia" oninput="render()"></div>
-          <div class="field"><label>Sapaan HRD</label>
-            <select id="sapaan" onchange="render()">
-              <option value="Bapak HRD">Bapak HRD</option>
-              <option value="Ibu HRD">Ibu HRD</option>
-              <option value="Bapak/Ibu HRD">Bapak/Ibu HRD</option>
-              <option value="Tim Rekrutmen">Tim Rekrutmen</option>
-              <option value="Manajer HRD">Manajer HRD</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-section">
-          <p class="section-label">Posisi & sumber</p>
-          <div class="field"><label>Posisi yang Dilamar</label><input id="posisi" type="text" placeholder="Staff Admin, Frontend Developer, dll." oninput="render()"></div>
-          <div class="field"><label>Sumber Informasi Lowongan</label><input id="sumber" type="text" placeholder="LinkedIn, Jobstreet, website perusahaan..." oninput="render()"></div>
-        </div>
-      </div>
-
-      <!-- Tab Isi -->
-      <div id="tab-isi" class="tab-panel">
-        <div class="form-section">
-          <p class="section-label">Kustomisasi paragraf</p>
-          <div class="field">
-            <label>Paragraf setelah tabel data diri</label>
-            <textarea id="para1" oninput="render()">Bermaksud untuk mengajukan diri guna mengisi posisi tersebut. Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan berkas-berkas pendukung sebagai kelengkapan administrasi.</textarea>
-          </div>
-          <div class="field">
-            <label>Paragraf harapan & penutup</label>
-            <textarea id="para2" oninput="render()">Saya berharap Bapak/Ibu dapat mempertimbangkan surat lamaran kerja ini dan memberikan kesempatan wawancara agar saya dapat menjelaskan kualifikasi saya lebih lanjut. Saya memiliki komitmen yang tinggi untuk berkontribusi secara optimal.</textarea>
-          </div>
-          <div class="field">
-            <label>Kalimat penutup akhir</label>
-            <input id="closing" type="text" value="Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih." oninput="render()">
-          </div>
-        </div>
-        <div class="form-section">
-          <p class="section-label">Lampiran (opsional)</p>
-          <div class="field">
-            <label>Daftar lampiran</label>
-            <textarea id="lampiran" rows="4" placeholder="1. Curriculum Vitae&#10;2. Fotokopi Ijazah&#10;3. Transkrip Nilai&#10;4. Pas Foto 4x6" oninput="render()"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-footer">
-      <button class="btn btn-ghost" onclick="resetForm()"><i class="ti ti-refresh"></i> Reset</button>
-      <button class="btn btn-primary" onclick="printLetter()"><i class="ti ti-printer"></i> Cetak / Simpan PDF</button>
-    </div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    100% gratis & open source
   </div>
 
-  <!-- Preview -->
-  <div class="preview">
-    <div class="preview-toolbar">
-      <span>Preview surat lamaran</span>
-      <div class="preview-toolbar-actions">
-        <button class="icon-btn" onclick="copyText()"><i class="ti ti-copy"></i> Salin teks</button>
-        <button class="icon-btn" onclick="printLetter()"><i class="ti ti-printer"></i> Cetak / PDF</button>
+  <h1>Buat surat lamaran<br><span>dalam hitungan menit</span></h1>
+
+  <p>Isi form sederhana, surat lamaran profesional langsung terbentuk secara real-time. Tidak perlu install, tidak perlu daftar.</p>
+
+  <div class="hero-actions">
+    <a href="app.html" class="btn-hero btn-primary">
+      ✦ Buat surat sekarang
+    </a>
+    <a href="https://github.com" target="_blank" class="btn-hero btn-secondary">
+      ⭐ Star di GitHub
+    </a>
+  </div>
+
+  <div class="hero-note">
+    <span><span class="check">✓</span> Gratis selamanya</span>
+    <span><span class="check">✓</span> Tanpa daftar</span>
+    <span><span class="check">✓</span> Bisa cetak / simpan PDF</span>
+  </div>
+</section>
+
+<!-- MOCKUP -->
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="mockup-bar">
+      <div class="mockup-dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="mockup-url">surat-lamaran-generator.github.io</div>
+    </div>
+    <div class="mockup-body">
+      <div class="mockup-sidebar">
+        <div class="mockup-tabs">
+          <div class="m-tab active">Pengirim</div>
+          <div class="m-tab">Tujuan</div>
+          <div class="m-tab">Isi Surat</div>
+        </div>
+        <div class="m-field">
+          <div class="m-label">Nama Lengkap</div>
+          <div class="m-input" style="display:flex;align-items:center;color:#a0a09a;">Budi Santoso</div>
+        </div>
+        <div class="m-field">
+          <div class="m-label">Pendidikan Terakhir</div>
+          <div class="m-input" style="display:flex;align-items:center;color:#a0a09a;">S1 Teknik Informatika</div>
+        </div>
+        <div class="m-field">
+          <div class="m-label">Universitas</div>
+          <div class="m-input" style="display:flex;align-items:center;color:#a0a09a;">Universitas Jenderal Achmad Yani</div>
+        </div>
+        <div class="m-field">
+          <div class="m-label">Email</div>
+          <div class="m-input" style="display:flex;align-items:center;color:#a0a09a;">budi@gmail.com</div>
+        </div>
+        <div class="m-field">
+          <div class="m-label">Posisi yang Dilamar</div>
+          <div class="m-input" style="display:flex;align-items:center;color:#a0a09a;">Frontend Developer</div>
+        </div>
+        <div style="margin-top:16px;background:#2563eb;border-radius:8px;padding:8px;text-align:center;font-size:11px;color:white;font-weight:600;">🖨 Cetak / Simpan PDF</div>
+      </div>
+      <div class="mockup-preview">
+        <div class="paper-mini">
+          <div class="p-date">Bandung, 26 Juni 2026</div>
+          <div class="p-hal">Hal: Lamaran Pekerjaan</div>
+          <div class="p-to">
+            Yth. Bapak/Ibu HRD<br>
+            PT Teknologi Maju<br>
+            di Tempat
+          </div>
+          <div class="p-body">Dengan hormat,</div>
+          <div class="p-body">Berdasarkan informasi lowongan yang saya peroleh melalui LinkedIn, saya mengetahui bahwa PT Teknologi Maju sedang mencari kandidat untuk posisi <strong>Frontend Developer</strong>. Saya yang bertanda tangan di bawah ini:</div>
+          <table class="p-table">
+            <tr><td>Nama</td><td>:</td><td>Budi Santoso</td></tr>
+            <tr><td>Jenis Kelamin</td><td>:</td><td>Laki-laki</td></tr>
+            <tr><td>Pendidikan</td><td>:</td><td>S1 Teknik Informatika (UNJANI)</td></tr>
+            <tr><td>E-mail</td><td>:</td><td>budi@gmail.com</td></tr>
+          </table>
+          <div class="p-body">Bermaksud mengajukan diri untuk posisi tersebut. Bersama surat ini saya lampirkan berkas-berkas pendukung sebagai bahan pertimbangan.</div>
+          <div class="p-sign">
+            Hormat saya,
+            <div class="p-sign-space"></div>
+            <div class="p-sign-name">Budi Santoso</div>
+          </div>
+        </div>
       </div>
     </div>
-    <div id="letter-paper"></div>
   </div>
 </div>
 
-<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg">Berhasil!</span></div>
+<hr class="divider">
 
-<script>
-  function val(id) {
-    const el = document.getElementById(id);
-    return el ? el.value.trim() : '';
-  }
+<!-- FITUR -->
+<section class="section" id="fitur">
+  <p class="section-label">Fitur</p>
+  <h2 class="section-title">Semua yang kamu butuhkan</h2>
+  <p class="section-sub">Dirancang untuk mahasiswa, fresh graduate, dan siapa saja yang butuh surat lamaran cepat.</p>
 
-  function formatDate(d) {
-    if (!d) { const n = new Date(); d = n.toISOString().split('T')[0]; }
-    const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    const parts = d.split('-');
-    if (parts.length !== 3) return d;
-    return `${parseInt(parts[2])} ${months[parseInt(parts[1])-1]} ${parts[0]}`;
-  }
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(37,99,235,0.12);">⚡</div>
+      <h3>Real-time preview</h3>
+      <p>Surat otomatis terupdate setiap kamu mengetik. Tidak perlu klik tombol generate.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.12);">🖨</div>
+      <h3>Cetak atau simpan PDF</h3>
+      <p>Langsung print atau simpan sebagai PDF dari browser. Tanpa tools tambahan.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(168,85,247,0.12);">✏️</div>
+      <h3>Paragraf bisa dikustomisasi</h3>
+      <p>Ubah isi paragraf sesuai kebutuhan. Tidak terpaku pada template baku.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(251,191,36,0.12);">📋</div>
+      <h3>Daftar lampiran otomatis</h3>
+      <p>Isi daftar lampiran di form, otomatis masuk ke badan surat dengan format rapi.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(20,184,166,0.12);">🌙</div>
+      <h3>Dark mode</h3>
+      <p>Mengikuti preferensi sistem. Nyaman dipakai siang maupun malam hari.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(239,68,68,0.12);">📱</div>
+      <h3>Responsive</h3>
+      <p>Bisa dipakai di HP, tablet, maupun desktop tanpa masalah tampilan.</p>
+    </div>
+  </div>
+</section>
 
-  function render() {
-    const nama       = val('nama')       || '[Nama Lengkap]';
-    const gender     = val('gender')     || 'Laki-laki';
-    const ttl        = val('ttl')        || '[Tempat, Tanggal Lahir]';
-    const agama      = val('agama')      || '[Agama]';
-    const pend       = val('pendidikan') || 'S1';
-    const jurusan    = val('jurusan')    || '[Jurusan]';
-    const inst       = val('institusi')  || '[Universitas]';
-    const alamat     = val('alamat')     || '[Alamat]';
-    const wa         = val('wa')         || '[Nomor WA]';
-    const email      = val('email')      || '[Email]';
-    const kota       = val('kota')       || '[Kota]';
-    const tgl        = val('tgl');
-    const perusahaan = val('perusahaan') || '[Nama Perusahaan]';
-    const sapaan     = val('sapaan')     || 'Bapak/Ibu HRD';
-    const posisi     = val('posisi')     || '[Posisi]';
-    const sumber     = val('sumber')     || 'informasi yang saya peroleh';
-    const para1      = val('para1');
-    const para2      = val('para2');
-    const closing    = val('closing');
-    const lampiran   = val('lampiran');
+<hr class="divider">
 
-    let lampiranHtml = '';
-    if (lampiran) {
-      const items = lampiran.split('\n').filter(l => l.trim());
-      lampiranHtml = `
-        <p style="margin-bottom:6px;">Adapun berkas yang saya lampirkan:</p>
-        <ol style="margin-left:20px; margin-bottom:14px; line-height:1.8;">
-          ${items.map(i => `<li>${i.replace(/^\d+\.\s*/, '')}</li>`).join('')}
-        </ol>
-      `;
-    }
+<!-- CARA PAKAI -->
+<section class="section" id="cara-pakai">
+  <p class="section-label">Cara pakai</p>
+  <h2 class="section-title">Tiga langkah, selesai</h2>
+  <p class="section-sub">Tidak perlu akun, tidak perlu install. Langsung bisa dipakai.</p>
 
-    document.getElementById('letter-paper').innerHTML = `
-      <div class="letter-date">${kota}, ${formatDate(tgl)}</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Isi form</h3>
+      <p>Masukkan data diri, info perusahaan, dan posisi yang dilamar di kolom yang tersedia.</p>
+      <span class="step-arrow">›</span>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Cek preview</h3>
+      <p>Surat langsung terbentuk di sisi kanan. Sesuaikan isi hingga sesuai keinginan.</p>
+      <span class="step-arrow">›</span>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Cetak atau simpan</h3>
+      <p>Klik tombol cetak, pilih "Save as PDF" di dialog print. Selesai!</p>
+    </div>
+  </div>
+</section>
 
-      <div class="letter-hal">Hal: Lamaran Pekerjaan</div>
+<hr class="divider">
 
-      <div class="letter-recipient">
-        <p>Yth. ${sapaan}</p>
-        <p>${perusahaan}</p>
-        <p>di Tempat</p>
-      </div>
+<!-- CTA BOTTOM -->
+<div class="cta-section">
+  <h2>Siap buat surat lamaranmu?</h2>
+  <p>Gratis, tanpa daftar, langsung pakai. Butuh waktu kurang dari 5 menit.</p>
+  <a href="app.html" class="btn-hero btn-primary" style="font-size:16px;padding:14px 32px;">
+    ✦ Buat surat sekarang
+  </a>
+</div>
 
-      <div class="letter-greeting"><p>Dengan hormat,</p></div>
+<footer>
+  <p>© 2026 Surat Lamaran Generator · MIT License</p>
+  <div class="footer-links">
+    <a href="https://github.com" target="_blank">GitHub</a>
+    <a href="app.html">Buka generator</a>
+  </div>
+</footer>
 
-      <div class="letter-body">
-        <p>Berdasarkan informasi lowongan pekerjaan yang saya peroleh melalui ${sumber}, saya mengetahui bahwa ${perusahaan} sedang mencari kandidat untuk posisi <strong>${posisi}</strong>. Sehubungan dengan hal tersebut, saya yang bertanda tangan di bawah ini:</p>
-
-        <table class="letter-table">
-          <tr><td>Nama</td><td class="colon">:</td><td>${nama}</td></tr>
-          <tr><td>Jenis Kelamin</td><td class="colon">:</td><td>${gender}</td></tr>
-          <tr><td>Tempat, Tanggal Lahir</td><td class="colon">:</td><td>${ttl}</td></tr>
-          <tr><td>Agama</td><td class="colon">:</td><td>${agama}</td></tr>
-          <tr><td>Pendidikan Terakhir</td><td class="colon">:</td><td>${pend} ${jurusan} (${inst})</td></tr>
-          <tr><td>Alamat</td><td class="colon">:</td><td>${alamat}</td></tr>
-          <tr><td>Nomor WA</td><td class="colon">:</td><td>${wa}</td></tr>
-          <tr><td>E-mail</td><td class="colon">:</td><td>${email}</td></tr>
-        </table>
-
-        <p>${para1}</p>
-        ${lampiranHtml}
-        <p>${para2} di ${perusahaan}.</p>
-        <p>${closing}</p>
-      </div>
-
-      <div class="letter-closing">
-        <p>Hormat saya,</p>
-        <div class="sign-space"></div>
-        <p class="signer">${nama}</p>
-      </div>
-    `;
-  }
-
-  function switchTab(name, el) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-  }
-
-  function printLetter() {
-    const paper = document.getElementById('letter-paper').innerHTML;
-    const w = window.open('', '_blank');
-    w.document.write(`<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Surat Lamaran</title>
-  <style>
-    body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.65; color: #1a1a1a; margin: 0; padding: 56px 64px; }
-    .letter-date { text-align: right; margin-bottom: 28px; }
-    .letter-hal { margin-bottom: 20px; font-weight: bold; }
-    .letter-recipient { margin-bottom: 28px; }
-    .letter-recipient p { margin: 0; line-height: 1.7; }
-    .letter-greeting { margin-bottom: 14px; }
-    .letter-body p { margin-bottom: 14px; text-align: justify; }
-    .letter-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11.5pt; }
-    .letter-table td { padding: 2px 0; vertical-align: top; }
-    .letter-table td:first-child { width: 140px; }
-    .letter-table td.colon { width: 16px; text-align: center; }
-    .letter-closing { margin-top: 28px; }
-    .sign-space { height: 70px; }
-    .signer { font-weight: bold; }
-    ol { margin-left: 20px; margin-bottom: 14px; line-height: 1.8; }
-    @media print { body { padding: 0; } }
-  </style>
-</head>
-<body>${paper}</body>
-</html>`);
-    w.document.close();
-    setTimeout(() => { w.focus(); w.print(); }, 500);
-  }
-
-  function copyText() {
-    const text = document.getElementById('letter-paper').innerText;
-    navigator.clipboard.writeText(text).then(() => showToast('Teks surat berhasil disalin!'));
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
-  }
-
-  function resetForm() {
-    if (!confirm('Reset semua isian form?')) return;
-    const fields = ['nama','ttl','agama','jurusan','institusi','alamat','wa','email','kota','perusahaan','posisi','sumber','para1','para2','closing','lampiran'];
-    fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    render();
-    showToast('Form berhasil direset');
-  }
-
-  // Init default date
-  document.getElementById('tgl').valueAsDate = new Date();
-
-  // Default textarea values
-  document.getElementById('para1').value = 'Bermaksud untuk mengajukan diri guna mengisi posisi tersebut. Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan berkas-berkas pendukung sebagai kelengkapan administrasi.';
-  document.getElementById('para2').value = 'Saya berharap Bapak/Ibu dapat mempertimbangkan surat lamaran kerja ini dan memberikan kesempatan wawancara agar saya dapat menjelaskan kualifikasi saya lebih lanjut. Saya memiliki komitmen yang tinggi untuk berkontribusi secara optimal.';
-  document.getElementById('closing').value = 'Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.';
-
-  render();
-</script>
 </body>
 </html>
