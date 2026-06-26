@@ -41,7 +41,8 @@ Download file `index.html`, lalu buka di browser. Selesai.
 
 ```
 surat-lamaran-generator/
-├── index.html       # Aplikasi utama (single file)
+├── index.html       # Landing Page
+├── app.html         # Aplikasi utama
 ├── README.md        # Dokumentasi ini
 └── LICENSE          # MIT License
 ```
