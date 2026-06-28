@@ -421,7 +421,23 @@
           <p class="section-label">Kustomisasi paragraf</p>
           <div class="field">
             <label>Paragraf setelah tabel data diri</label>
-            <textarea id="para1" oninput="render()">Bermaksud untuk mengajukan diri guna mengisi posisi tersebut. Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan berkas-berkas pendukung sebagai kelengkapan administrasi.</textarea>
+            <textarea id="para1" oninput="render()">Bermaksud untuk mengajukan diri guna mengisi posisi tersebut.</textarea>
+          </div>
+          <div class="field">
+            <label>Template Pengantar Lampiran</label>
+            <select id="template-pengantar" onchange="render()">
+              <option value="opsi1">Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan...</option>
+              <option value="opsi2">Sesuai dengan ketentuan poster lowongan pekerjaan, saya lampirkan dokumen pelengkap...</option>
+              <option value="custom">Gunakan Kalimat Sendiri (Tulis di bawah)</option>
+            </select>
+          </div>
+          <div class="field" id="custom-pengantar-container" style="display: none;">
+            <label>Kalimat Pengantar Lampiran Kustom</label>
+            <input id="custom-pengantar" type="text" placeholder="Sebagai bahan pertimbangan dengan ini saya lampirkan:" oninput="render()">
+          </div>
+          <div class="field">
+            <label>Daftar lampiran (Satu per baris)</label>
+            <textarea id="lampiran" rows="4" placeholder="1. Curriculum Vitae&#10;2. Fotokopi Ijazah&#10;3. Transkrip Nilai&#10;4. Pas Foto 4x6" oninput="render()"></textarea>
           </div>
           <div class="field">
             <label>Paragraf harapan & penutup</label>
@@ -430,13 +446,6 @@
           <div class="field">
             <label>Kalimat penutup akhir</label>
             <input id="closing" type="text" value="Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih." oninput="render()">
-          </div>
-        </div>
-        <div class="form-section">
-          <p class="section-label">Lampiran (opsional)</p>
-          <div class="field">
-            <label>Daftar lampiran</label>
-            <textarea id="lampiran" rows="4" placeholder="1. Curriculum Vitae&#10;2. Fotokopi Ijazah&#10;3. Transkrip Nilai&#10;4. Pas Foto 4x6" oninput="render()"></textarea>
           </div>
         </div>
       </div>
@@ -498,12 +507,28 @@
     const para2      = val('para2');
     const closing    = val('closing');
     const lampiran   = val('lampiran');
+    
+    // Logika pemilihan kalimat pengantar lampiran
+    const templateOpt = val('template-pengantar');
+    const customContainer = document.getElementById('custom-pengantar-container');
+    let kalimatPengantar = '';
+
+    if (templateOpt === 'opsi1') {
+      customContainer.style.display = 'none';
+      kalimatPengantar = 'Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan berkas-berkas pendukung sebagai kelengkapan administrasi:';
+    } else if (templateOpt === 'opsi2') {
+      customContainer.style.display = 'none';
+      kalimatPengantar = 'Sesuai dengan ketentuan poster lowongan pekerjaan, saya lampirkan dokumen pelengkap sebagai bahan pertimbangan:';
+    } else {
+      customContainer.style.display = 'block';
+      kalimatPengantar = val('custom-pengantar') || 'Sebagai bahan pertimbangan, berikut saya lampirkan:';
+    }
 
     let lampiranHtml = '';
     if (lampiran) {
       const items = lampiran.split('\n').filter(l => l.trim());
       lampiranHtml = `
-        <p style="margin-bottom:6px;">Adapun berkas yang saya lampirkan:</p>
+        <p style="margin-bottom:6px;">${kalimatPengantar}</p>
         <ol style="margin-left:20px; margin-bottom:14px; line-height:1.8;">
           ${items.map(i => `<li>${i.replace(/^\d+\.\s*/, '')}</li>`).join('')}
         </ol>
@@ -605,8 +630,9 @@
 
   function resetForm() {
     if (!confirm('Reset semua isian form?')) return;
-    const fields = ['nama','ttl','agama','jurusan','institusi','alamat','wa','email','kota','perusahaan','posisi','sumber','para1','para2','closing','lampiran'];
+    const fields = ['nama','ttl','agama','jurusan','institusi','alamat','wa','email','kota','perusahaan','posisi','sumber','para1','para2','closing','lampiran','custom-pengantar'];
     fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('template-pengantar').value = 'opsi1';
     render();
     showToast('Form berhasil direset');
   }
@@ -615,7 +641,8 @@
   document.getElementById('tgl').valueAsDate = new Date();
 
   // Default textarea values
-  document.getElementById('para1').value = 'Bermaksud untuk mengajukan diri guna mengisi posisi tersebut. Sebagai bahan pertimbangan Bapak/Ibu, bersama surat ini turut saya lampirkan berkas-berkas pendukung sebagai kelengkapan administrasi.';
+  document.getElementById('para1').value = 'Bermaksud untuk mengajukan diri guna mengisi posisi tersebut.';
+  document.getElementById('lampiran').value = '1. Curriculum Vitae (CV)\n2. Pas Foto Terbaru\n3. Fotokopi KTP\n4. Fotokopi Ijazah & Transkrip Nilai';
   document.getElementById('para2').value = 'Saya berharap Bapak/Ibu dapat mempertimbangkan surat lamaran kerja ini dan memberikan kesempatan wawancara agar saya dapat menjelaskan kualifikasi saya lebih lanjut. Saya memiliki komitmen yang tinggi untuk berkontribusi secara optimal.';
   document.getElementById('closing').value = 'Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.';
 
