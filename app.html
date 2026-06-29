@@ -462,7 +462,7 @@
     <div class="preview-toolbar">
       <span>Preview surat lamaran</span>
       <div class="preview-toolbar-actions">
-        <button class="icon-btn" onclick="copyText()"><i class="ti ti-copy"></i> Salin teks</button>
+        <button class="icon-btn" onclick="copyRich()"><i class="ti ti-copy"></i> Salin teks</button>
         <button class="icon-btn" onclick="printLetter()"><i class="ti ti-printer"></i> Cetak / PDF</button>
       </div>
     </div>
@@ -616,9 +616,32 @@
     setTimeout(() => { w.focus(); w.print(); }, 500);
   }
 
-  function copyText() {
-    const text = document.getElementById('letter-paper').innerText;
-    navigator.clipboard.writeText(text).then(() => showToast('Teks surat berhasil disalin!'));
+  function copyRich() {
+    const paper = document.getElementById('letter-paper');
+    const html =
+      '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' +
+      paper.innerHTML +
+      '</body></html>';
+    const text = paper.innerText;
+    if (navigator.clipboard && typeof ClipboardItem !== 'undefined' && navigator.clipboard.write) {
+      const item = new ClipboardItem({
+        'text/html': new Blob([html], { type: 'text/html' }),
+        'text/plain': new Blob([text], { type: 'text/plain' }),
+      });
+      navigator.clipboard.write([item]).then(
+        () => showToast('Teks + tabel berhasil disalin!'),
+        () => fallbackCopyText(text)
+      );
+    } else {
+      fallbackCopyText(text);
+    }
+  }
+
+  function fallbackCopyText(text) {
+    navigator.clipboard.writeText(text).then(
+      () => showToast('Teks surat berhasil disalin!'),
+      () => showToast('Gagal menyalin, mohon coba lagi.')
+    );
   }
 
   function showToast(msg) {
