@@ -618,10 +618,7 @@
 
   function copyRich() {
     const paper = document.getElementById('letter-paper');
-    const html =
-      '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' +
-      paper.innerHTML +
-      '</body></html>';
+    const html = paper.innerHTML;
     const text = paper.innerText;
     if (navigator.clipboard && typeof ClipboardItem !== 'undefined' && navigator.clipboard.write) {
       const item = new ClipboardItem({

@@ -12,10 +12,9 @@ Generator surat lamaran kerja berbasis web — tinggal isi form, surat langsung 
 - **Form 3 tab** — Pengirim, Tujuan, dan Isi Surat
 - **Cetak / Simpan PDF** — langsung dari browser, tanpa tools tambahan
 - **Salin teks** — copy plain text surat ke clipboard
-- **Lampiran opsional** — daftar berkas otomatis masuk ke isi surat
-- **Dark mode** — mengikuti preferensi sistem
-- **Responsive** — bisa dipakai di HP maupun desktop
-- **Zero dependency** — satu file HTML, tidak butuh framework atau build step
+- **Salin teks** — salin struktur tabel + tebal agar paste di Gmail/Word tetap rapi; otomatis jadi teks biasa di Notepad
+- **Tampilan gelap** — antarmuka gelap sebagai basis utama, lebih nyaman dipakai lama
+- **Tanpa dependency** — satu file HTML, tidak butuh framework atau build step
 
 ---
 
