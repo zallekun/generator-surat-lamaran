@@ -621,24 +621,62 @@
     const html = paper.innerHTML;
     const text = paper.innerText;
     if (navigator.clipboard && typeof ClipboardItem !== 'undefined' && navigator.clipboard.write) {
-      const item = new ClipboardItem({
-        'text/html': new Blob([html], { type: 'text/html' }),
-        'text/plain': new Blob([text], { type: 'text/plain' }),
-      });
-      navigator.clipboard.write([item]).then(
-        () => showToast('Teks + tabel berhasil disalin!'),
-        () => fallbackCopyText(text)
-      );
+      try {
+        const item = new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([text], { type: 'text/plain' }),
+        });
+        navigator.clipboard.write([item]).then(
+          () => showToast('Teks + tabel berhasil disalin!'),
+          () => fallbackCopyText(text)
+        );
+      } catch (err) {
+        fallbackCopyText(text);
+      }
     } else {
       fallbackCopyText(text);
     }
   }
 
   function fallbackCopyText(text) {
-    navigator.clipboard.writeText(text).then(
-      () => showToast('Teks surat berhasil disalin!'),
-      () => showToast('Gagal menyalin, mohon coba lagi.')
-    );
+    // Jalur alternatif 1: Salin HTML + Teks (Rich Text) menggunakan Selection/Range
+    try {
+      const paper = document.getElementById('letter-paper');
+      const range = document.createRange();
+      range.selectNode(paper);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      const successful = document.execCommand('copy');
+      selection.removeAllRanges();
+      if (successful) {
+        showToast('Teks + tabel berhasil disalin!');
+        return;
+      }
+    } catch (err) {
+      // Lanjut ke fallback berikutnya jika gagal
+    }
+
+    // Jalur alternatif 2: Salin teks biasa menggunakan Textarea sementara
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      textArea.style.top = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      if (successful) {
+        showToast('Teks surat berhasil disalin!');
+      } else {
+        showToast('Gagal menyalin, mohon coba lagi.');
+      }
+    } catch (err) {
+      showToast('Gagal menyalin, mohon coba lagi.');
+    }
   }
 
   function showToast(msg) {
